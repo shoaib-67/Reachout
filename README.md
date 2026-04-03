@@ -109,5 +109,30 @@ ReachOut provides two main services:
 - NFR-5 Maintainability: modular code and documented APIs
 - NFR-6 Privacy: optional contact masking and report/moderation support
 
+## SDLC Model
+
+For the ReachOut platform, a comparative analysis of different SDLC models was conducted based on selected project criteria. Each criterion was assigned a priority according to its importance to the system. The models were then evaluated against these criteria, and scores were calculated accordingly as shown below.
+
+| Evaluation Criterion | Priority | Waterfall | V-Model | Iterative | Incremental | Spiral | Agile |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Suitability for mostly stable requirements | 3 | 2 (6) | 2 (6) | 3 (9) | 3 (9) | 2 (6) | 3 (9) |
+| Suitability for small team size | 3 | 2 (6) | 2 (6) | 2 (6) | 3 (9) | 1 (3) | 2 (6) |
+| Support for modular, phased delivery | 3 | 1 (3) | 1 (3) | 2 (6) | 3 (9) | 2 (6) | 3 (9) |
+| Compatibility with tight time constraints | 3 | 2 (6) | 2 (6) | 2 (6) | 3 (9) | 1 (3) | 2 (6) |
+| Adequacy for medium-risk projects | 2 | 1 (2) | 2 (4) | 2 (4) | 2 (4) | 3 (6) | 2 (4) |
+| Low process overhead for small teams | 2 | 3 (6) | 2 (4) | 2 (4) | 3 (6) | 1 (2) | 1 (2) |
+| Accommodates inter-phase feedback | 2 | 1 (2) | 1 (2) | 3 (6) | 3 (6) | 3 (6) | 3 (6) |
+| Total Weighted Score |  | 23 | 26 | 32 | 40 | 23 | 32 |
+
+Table: Weighted SDLC Model Comparison Matrix for ReachOut
+
+### Result and Justification
+
+The results are as follows: Waterfall (23), V-Model (26), Iterative (32), Incremental (40), Spiral (23), and Agile (32).
+
+The Incremental Model achieved the highest score of 40, indicating the strongest alignment with the project's key requirements, particularly modular delivery, small team suitability, compatibility with tight time constraints, and low process overhead. The model's principle of building and delivering a functional system in successive, independent stages directly corresponds to ReachOut's two-module architecture and the MVP-first development strategy mandated in Section 2.4 of the SRS.
+
+Given that ReachOut requires phased delivery of functional software within an academic timeline, with a small team and medium-complexity modules, the Incremental Model is the most suitable choice. Its delivery-first approach ensures that a working product is available at each stage, reduces the risk of total project failure under time pressure, and accommodates minor requirement revisions between increments without the need for a full restart.
+
 
 
