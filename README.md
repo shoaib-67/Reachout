@@ -1,5 +1,7 @@
 # Reachout
 
+ReachOut is a community support platform designed to connect people in urgent need with nearby help. It focuses on blood donation requests and lost-and-found recovery by enabling users to post cases, search relevant information, communicate safely, and resolve requests efficiently.
+
 ## SRS Model
 
 ### 1. Introduction
