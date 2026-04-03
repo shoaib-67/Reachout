@@ -134,5 +134,7 @@ The Incremental Model achieved the highest score of 40, indicating the strongest
 
 Given that ReachOut requires phased delivery of functional software within an academic timeline, with a small team and medium-complexity modules, the Incremental Model is the most suitable choice. Its delivery-first approach ensures that a working product is available at each stage, reduces the risk of total project failure under time pressure, and accommodates minor requirement revisions between increments without the need for a full restart.
 
+![Use Case Diagram](usecase_diagram.jpg)
+
 
 
