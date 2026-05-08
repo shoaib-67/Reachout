@@ -1,0 +1,297 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="ReachOut helps with Person Lost, Goods Lost, and Blood Donation emergency support."
+    />
+    <title>ReachOut - Person Lost, Goods Lost, Blood Donation</title>
+    <link rel="icon" type="image/png" href="assets/lost-found-logo.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="header-wrap">
+      <div class="top-strip">
+        <div class="container top-strip-inner">
+          <a class="pill-btn" href="#home-options">Choose Service</a>
+          <div class="top-info">
+            <span>Call Support: +880 1795 766 338</span>
+            <span>Email: hi@reachout.org</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-nav-wrap">
+        <div class="container main-nav">
+          <a class="brand" href="#" aria-label="ReachOut home">
+            <img src="assets/lost-found-logo.png" alt="ReachOut logo" class="brand-image" />
+          </a>
+
+          <nav class="menu" aria-label="Primary navigation">
+            <a href="#">Home</a>
+            <a href="#" aria-disabled="true">Lost &amp; Found</a>
+            <a href="#" aria-disabled="true">Blood Donation</a>
+            <a href="#contact">Contact</a>
+          </nav>
+
+          <div class="nav-actions">
+            <a href="#" class="text-link">Log In</a>
+            <a href="#" class="text-link">Register</a>
+            <a href="#home-options" class="btn btn-primary">Choose Option</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="hero">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+          <img src="assets/lost-found-logo.png" alt="ReachOut" class="hero-logo" />
+          <h1><span>Choose</span><br />Your Support Service</h1>
+
+          <div class="home-options" id="home-options">
+            <div class="home-option-card option-lost option-toggle-card" id="lostOptionCard">
+              <button
+                class="lost-toggle-btn"
+                id="lostToggleBtn"
+                type="button"
+                aria-expanded="false"
+                aria-controls="lostOptionMenu"
+              >
+                <h3>Lost &amp; Found</h3>
+                <p>Report or search lost/found items and missing person cases.</p>
+                <span class="lost-toggle-chip">Choose Type</span>
+              </button>
+              <div class="lost-suboptions" id="lostOptionMenu" hidden>
+                <a class="lost-suboption" href="#">Human Lost &amp; Found</a>
+                <a class="lost-suboption" href="#">Goods Lost &amp; Found</a>
+              </div>
+            </div>
+
+            <a class="home-option-card option-blood" href="#" aria-disabled="true">
+              <h3>Blood Donation</h3>
+              <p>Post urgent blood requests and connect with nearby donors.</p>
+              <span>Coming Soon</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section explore">
+        <div class="container">
+          <div class="section-heading">
+            <p class="mini">Explore Now</p>
+            <h2>Find What's Lost and Found</h2>
+          </div>
+
+          <div class="category-grid">
+            <a class="category-card" href="#">
+              <div class="cat-image bag" aria-hidden="true">
+                <svg class="cat-icon" viewBox="0 0 64 64" fill="none">
+                  <rect x="14" y="24" width="36" height="28" rx="8"></rect>
+                  <path d="M22 24v-4c0-5.5 4.5-10 10-10s10 4.5 10 10v4"></path>
+                  <path d="M28 32h8"></path>
+                </svg>
+              </div>
+              <span>Bags</span>
+            </a>
+            <a class="category-card" href="#">
+              <div class="cat-image docs" aria-hidden="true">
+                <svg class="cat-icon" viewBox="0 0 64 64" fill="none">
+                  <path d="M20 10h18l10 10v34H20z"></path>
+                  <path d="M38 10v10h10"></path>
+                  <path d="M26 34h16M26 42h12"></path>
+                </svg>
+              </div>
+              <span>Document</span>
+            </a>
+            <a class="category-card" href="#">
+              <div class="cat-image keys" aria-hidden="true">
+                <svg class="cat-icon" viewBox="0 0 64 64" fill="none">
+                  <circle cx="24" cy="24" r="10"></circle>
+                  <path d="M32 24h18"></path>
+                  <path d="M44 24v8M50 24v6"></path>
+                </svg>
+              </div>
+              <span>Keys</span>
+            </a>
+            <a class="category-card" href="#">
+              <div class="cat-image laptop" aria-hidden="true">
+                <svg class="cat-icon" viewBox="0 0 64 64" fill="none">
+                  <rect x="18" y="16" width="28" height="20" rx="3"></rect>
+                  <path d="M12 42h40l-4 8H16z"></path>
+                </svg>
+              </div>
+              <span>Laptop</span>
+            </a>
+            <a class="category-card" href="#">
+              <div class="cat-image people" aria-hidden="true">
+                <svg class="cat-icon" viewBox="0 0 64 64" fill="none">
+                  <circle cx="32" cy="22" r="8"></circle>
+                  <path d="M18 48c2.5-8 9-12 14-12s11.5 4 14 12"></path>
+                </svg>
+              </div>
+              <span>People</span>
+            </a>
+            <a class="category-card" href="#">
+              <div class="cat-image pets" aria-hidden="true">
+                <svg class="cat-icon" viewBox="0 0 64 64" fill="none">
+                  <ellipse cx="32" cy="38" rx="10" ry="8"></ellipse>
+                  <circle cx="22" cy="24" r="4"></circle>
+                  <circle cx="30" cy="20" r="4"></circle>
+                  <circle cx="38" cy="20" r="4"></circle>
+                  <circle cx="46" cy="24" r="4"></circle>
+                </svg>
+              </div>
+              <span>Pets</span>
+            </a>
+            <a class="category-card" href="#">
+              <div class="cat-image phone" aria-hidden="true">
+                <svg class="cat-icon" viewBox="0 0 64 64" fill="none">
+                  <rect x="22" y="10" width="20" height="44" rx="4"></rect>
+                  <path d="M29 16h6M30 48h4"></path>
+                </svg>
+              </div>
+              <span>Phones</span>
+            </a>
+            <a class="category-card view-all" href="#">
+              <strong>Explore All Ads</strong>
+              <small>View all</small>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section how" id="how">
+        <div class="container">
+          <div class="section-heading">
+            <h2>How It Works?</h2>
+          </div>
+
+          <div class="how-grid">
+            <article class="how-card">
+              <div class="how-icon">1</div>
+              <h3>Report Now</h3>
+              <p>Report a missing person, lost goods, or blood request.</p>
+            </article>
+            <article class="how-card">
+              <div class="how-icon">2</div>
+              <h3>Next Step</h3>
+              <p>Provide photo and key details for faster identification.</p>
+            </article>
+            <article class="how-card">
+              <div class="how-icon">3</div>
+              <h3>Help Community</h3>
+              <p>Nearby people respond and help complete safe recovery.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section impact">
+        <div class="impact-bg"></div>
+        <div class="container">
+          <div class="impact-card">
+            <p class="mini">Find everything</p>
+            <h2>Impacting the entire lost & found process in Bangladesh.</h2>
+            <p class="impact-text">
+              We are connecting lost items, missing people, and urgent blood requests by reuniting communities quickly.
+            </p>
+
+            <div class="stats-row">
+              <article>
+                <h3><span class="counter" data-target="2">0</span>K</h3>
+                <p>Person Lost Reported</p>
+              </article>
+              <article>
+                <h3><span class="counter" data-target="3">0</span>K</h3>
+                <p>Goods Lost Reported</p>
+              </article>
+              <article>
+                <h3><span class="counter" data-target="1">0</span>K</h3>
+                <p>Blood Requests</p>
+              </article>
+            </div>
+
+            <a class="btn btn-primary" href="#">Explore listings</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section testimonials" id="stories">
+        <div class="container testimonials-wrap">
+          <div class="testi-left">
+            <p class="mini">What our users say</p>
+            <h2>User Experience</h2>
+            <p>
+              We are on a mission to help people find what they have lost and report what they have found.
+            </p>
+            <div class="testi-controls">
+              <button id="prevTesti" type="button" aria-label="Previous testimonial">&larr;</button>
+              <button id="nextTesti" type="button" aria-label="Next testimonial">&rarr;</button>
+            </div>
+          </div>
+
+          <div class="testi-right" id="testiTrack">
+            <article class="testi-card active">
+              <p>
+                Before using ReachOut, losing my mobile felt like a total disaster. This platform made the process instant and simple.
+              </p>
+              <h4>Tahmidur Rahman</h4>
+              <span>HR Executive</span>
+            </article>
+            <article class="testi-card">
+              <p>
+                I uploaded my lost wallet and got it back quickly because someone reported it through ReachOut.
+              </p>
+              <h4>Shoaib</h4>
+              <span>Project Co-ordinator</span>
+            </article>
+            <article class="testi-card">
+              <p>
+                We needed urgent blood at night. ReachOut connected us with nearby donors within an hour.
+              </p>
+              <h4>Raihanul Hasan</h4>
+              <span>Accounts Manager</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section supporters" id="contact">
+        <div class="container">
+          <div class="section-heading">
+            <h2>Our Supporters</h2>
+          </div>
+
+          <div class="supporter-grid">
+            <span>ICT Bangladesh</span>
+            <span>City Blood Net</span>
+            <span>Safety Board</span>
+            <span>Volunteer Cyber Team</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>Copyright © 2024-<span id="year"></span> ReachOut. All Rights Reserved</p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+
+

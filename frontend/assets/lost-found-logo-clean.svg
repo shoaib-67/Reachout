@@ -1,0 +1,18 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-labelledby="title">
+  <title>Lost and Found Logo</title>
+  <g fill="#2F2C2C">
+    <rect x="60" y="74" width="34" height="48" rx="4" transform="rotate(-22 60 74)" />
+    <rect x="64" y="81" width="20" height="2.8" rx="1.4" transform="rotate(-22 64 81)" fill="#EFEFEF" />
+    <rect x="104" y="79" width="66" height="38" rx="4" transform="rotate(20 104 79)" />
+    <rect x="116" y="90" width="40" height="2.8" rx="1.4" transform="rotate(20 116 90)" fill="#EFEFEF" />
+    <path d="M185 52C193 33 214 26 229 33C244 40 250 58 240 75" fill="none" stroke="#2F2C2C" stroke-width="8" stroke-linecap="round" />
+    <path d="M212 69L194 110L163 99C170 82 190 73 212 69Z" />
+    <path d="M34 142H122L106 116H50L34 142Z" />
+    <path d="M118 142H226L210 116H141L118 142Z" />
+    <rect x="48" y="146" width="178" height="86" />
+  </g>
+  <rect x="83" y="146" width="4" height="86" fill="#EFEFEF" />
+  <rect x="94" y="152" width="124" height="74" fill="#2F2C2C" stroke="#EFEFEF" stroke-width="2" />
+  <text x="108" y="185" fill="#EFEFEF" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700">Lost &amp;</text>
+  <text x="108" y="211" fill="#EFEFEF" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700">Found</text>
+</svg>
