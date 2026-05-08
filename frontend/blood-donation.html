@@ -1,86 +1,19 @@
-﻿<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="ReachOut blood donation support page." />
     <title>ReachOut - Blood Donation</title>
-
+    <link rel="icon" type="image/png" href="/assets/lost-found-logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header class="header-wrap">
-      <div class="top-strip">
-        <div class="container top-strip-inner">
-          <a class="pill-btn" href="index.html">Back Home</a>
-          <div class="top-info">
-            <span>Call Support: +880 1795 766 338</span>
-            <span>Email: hi@reachout.org</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="main-nav-wrap">
-        <div class="container main-nav">
-          <a class="brand" href="index.html" aria-label="ReachOut home">
-            <img src="assets/reachout-logo.svg" alt="ReachOut logo" class="brand-image" />
-          </a>
-
-          <nav class="menu" aria-label="Primary navigation">
-            <a href="index.html">Home</a>
-            <a href="lost-found.html">Lost &amp; Found</a>
-            <a href="blood-donation.html">Blood Donation</a>
-          </nav>
-
-          <div class="nav-actions">
-            <a href="#" class="text-link">Log In</a>
-            <a href="#" class="text-link">Register</a>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <main class="subpage-main">
-      <section class="container subpage-hero blood">
-        <h1>Blood Donation Service</h1>
-        <p>Create urgent blood requests and connect with nearby available donors.</p>
-
-        <div class="subpage-actions">
-          <a class="btn btn-primary" href="#">Request Blood</a>
-          <a class="btn btn-outline-strong" href="#">Register as Donor</a>
-        </div>
-      </section>
-
-      <section class="container section">
-        <div class="subpage-grid">
-          <article class="subpage-card">
-            <h3>Create Emergency Request</h3>
-            <p>Provide blood group, hospital, and urgency details instantly.</p>
-          </article>
-          <article class="subpage-card">
-            <h3>Find Nearby Donors</h3>
-            <p>Search donors by blood group and location quickly.</p>
-          </article>
-          <article class="subpage-card">
-            <h3>Close Case</h3>
-            <p>Mark successful donation and keep reports up to date.</p>
-          </article>
-        </div>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <div class="container footer-inner">
-        <p>Copyright © 2024-<span id="year"></span> ReachOut. All Rights Reserved</p>
-      </div>
-    </footer>
-
-    <script src="script.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
