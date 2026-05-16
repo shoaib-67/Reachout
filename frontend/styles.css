@@ -1219,6 +1219,284 @@ p {
   padding: 18px;
 }
 
+.goods-page {
+  background: #f8fafd;
+}
+
+.goods-hero {
+  background:
+    linear-gradient(120deg, rgba(40, 57, 72, 0.92), rgba(79, 118, 223, 0.82)),
+    url("assets/impact-bg.svg");
+  background-position: center;
+  background-size: cover;
+  color: #ffffff;
+}
+
+.goods-hero-grid {
+  min-height: 430px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.55fr);
+  gap: 28px;
+  align-items: center;
+  padding: 60px 0;
+}
+
+.goods-hero .mini,
+.goods-panel .mini,
+.goods-report-form .mini,
+.goods-preview-panel .mini {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: var(--primary-2);
+  color: #ffffff;
+  font-family: "Red Hat Display", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.goods-hero h1 {
+  margin-top: 14px;
+  max-width: 760px;
+  font-size: clamp(38px, 6vw, 66px);
+  line-height: 1;
+}
+
+.goods-hero p {
+  margin-top: 16px;
+  color: #e7eef9;
+  max-width: 700px;
+  font-size: 18px;
+  line-height: 1.58;
+}
+
+.goods-kpi {
+  display: grid;
+  gap: 10px;
+}
+
+.goods-kpi article {
+  border-radius: 12px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  backdrop-filter: blur(8px);
+}
+
+.goods-kpi strong {
+  display: block;
+  font-size: 36px;
+  font-family: "Red Hat Display", sans-serif;
+  line-height: 1;
+}
+
+.goods-kpi span {
+  display: block;
+  margin-top: 8px;
+  color: #dfeaff;
+}
+
+.goods-workspace-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  gap: 18px;
+  align-items: start;
+}
+
+.goods-side-column {
+  display: grid;
+  gap: 16px;
+}
+
+.goods-panel,
+.goods-report-form,
+.goods-preview-panel {
+  background: #ffffff;
+  border: 1px solid var(--color-3);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 22px;
+}
+
+.goods-panel h2,
+.goods-report-form h2 {
+  margin-top: 10px;
+  font-size: clamp(28px, 4vw, 36px);
+}
+
+.goods-panel h3,
+.goods-preview-panel h3 {
+  margin-top: 10px;
+  font-size: 24px;
+}
+
+.goods-search-controls,
+.goods-form-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.goods-search-controls label,
+.goods-form-grid label {
+  display: grid;
+  gap: 8px;
+  color: var(--color-1);
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 700;
+}
+
+.goods-search-controls span,
+.goods-form-grid span {
+  font-size: 14px;
+}
+
+.goods-search-controls input,
+.goods-search-controls select,
+.goods-form-grid input,
+.goods-form-grid select,
+.goods-form-grid textarea {
+  width: 100%;
+  border: 1px solid var(--color-3);
+  border-radius: 10px;
+  padding: 12px 13px;
+  color: var(--color-1);
+  background: #ffffff;
+  font: 500 15px "Inter", sans-serif;
+}
+
+.goods-form-grid textarea {
+  resize: vertical;
+}
+
+.goods-list {
+  margin-top: 18px;
+  display: grid;
+  gap: 12px;
+}
+
+.goods-post-card {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 14px;
+  border: 1px solid var(--color-3);
+  border-radius: 12px;
+  padding: 14px;
+  background: #fbfdff;
+}
+
+.goods-post-card.resolved {
+  background: #f5f8fb;
+}
+
+.goods-post-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, #d6e6ff, #f9b36d);
+  color: var(--color-1);
+  font-family: "Red Hat Display", sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.goods-post-body {
+  min-width: 0;
+}
+
+.goods-post-body p {
+  margin-top: 12px;
+  color: var(--color-2);
+  line-height: 1.55;
+}
+
+.goods-post-footer {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--color-2);
+  font-size: 14px;
+}
+
+.goods-post-footer div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.goods-post-footer a,
+.goods-post-footer button {
+  color: var(--primary-1);
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 800;
+  text-decoration: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.goods-post-footer button:disabled {
+  color: var(--color-2);
+  cursor: not-allowed;
+}
+
+.goods-checklist {
+  margin: 14px 0 0;
+  padding-left: 20px;
+  color: var(--color-2);
+  line-height: 1.8;
+}
+
+.goods-note {
+  margin-top: 10px;
+  color: var(--color-2);
+  line-height: 1.55;
+}
+
+.goods-notice {
+  border: 1px solid var(--color-3);
+  border-left: 4px solid var(--primary-2);
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: var(--shadow);
+  padding: 14px;
+  color: var(--color-2);
+  font-weight: 700;
+}
+
+.goods-report-section {
+  padding-top: 0;
+}
+
+.goods-report-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 18px;
+  align-items: start;
+}
+
+.goods-report-form .btn {
+  margin-top: 18px;
+}
+
+.status-chip.verification {
+  background: #fff6df;
+  color: #9d6714;
+}
+
+.status-chip.resolved {
+  background: #e9f7ef;
+  color: #20734a;
+}
+
 .blood-page {
   background: #f8fafd;
 }
@@ -1607,12 +1885,16 @@ p {
   .human-hero-grid,
   .human-workspace-grid,
   .human-report-grid,
+  .goods-hero-grid,
+  .goods-workspace-grid,
+  .goods-report-grid,
   .blood-hero-grid,
   .blood-grid {
     grid-template-columns: 1fr;
   }
 
-  .human-side-column {
+  .human-side-column,
+  .goods-side-column {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1678,12 +1960,16 @@ p {
   .human-side-column,
   .human-search-controls,
   .form-grid,
+  .goods-side-column,
+  .goods-search-controls,
+  .goods-form-grid,
   .eligibility-form,
   .day-check-grid {
     grid-template-columns: 1fr;
   }
 
-  .human-hero-grid {
+  .human-hero-grid,
+  .goods-hero-grid {
     min-height: 0;
     padding: 44px 0;
   }
@@ -1696,17 +1982,20 @@ p {
   .human-panel-heading,
   .person-case-top,
   .person-case-footer,
+  .goods-post-footer,
   .blood-panel-heading,
   .blood-card,
   .request-head {
     display: grid;
   }
 
-  .person-case-card {
+  .person-case-card,
+  .goods-post-card {
     grid-template-columns: 1fr;
   }
 
-  .person-avatar {
+  .person-avatar,
+  .goods-post-icon {
     width: 64px;
     height: 64px;
   }
