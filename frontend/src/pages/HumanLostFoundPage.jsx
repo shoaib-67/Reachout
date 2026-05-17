@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { incrementUserPostCount } from "../services/userPostStats";
 
 const missingPersonCases = [
   {
@@ -63,6 +64,7 @@ function HumanLostFoundPage() {
       contact: data.get("contact") || "Contact not provided",
       type: reportType === "missing" ? "Missing Person Report" : "Found Person Report"
     });
+    incrementUserPostCount("human");
     event.currentTarget.reset();
     setReportType("missing");
   }

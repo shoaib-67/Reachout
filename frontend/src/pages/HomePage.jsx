@@ -1,7 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-const logoPath = "/assets/lost-found-logo.png";
-
 const testimonials = [
   {
     quote:
@@ -46,7 +44,6 @@ function HomePage({ navigate }) {
       <section className="hero" id="hero">
         <div className="hero-overlay"></div>
         <div className="container hero-content">
-          <img src={logoPath} alt="ReachOut" className="hero-logo" />
           <h1>
             <span>Choose</span>
             <br />
@@ -91,8 +88,27 @@ function HomePage({ navigate }) {
       <HowItWorks />
       <ImpactSection />
       <Testimonials activeIndex={testimonialIndex} setActiveIndex={setTestimonialIndex} />
+      <AboutSection />
       <Supporters />
+      <HomeBottomSupport navigate={navigate} />
     </main>
+  );
+}
+
+function AboutSection() {
+  return (
+    <section className="section about-section" id="about">
+      <div className="container about-wrap">
+        <div className="section-heading">
+          <p className="mini">About</p>
+          <h2>What ReachOut Does</h2>
+        </div>
+        <p className="about-text">
+          ReachOut is a community support platform that helps people report and recover lost items, share missing person alerts, and
+          connect urgent blood donation requests with nearby donors.
+        </p>
+      </div>
+    </section>
   );
 }
 
@@ -271,6 +287,22 @@ function Supporters() {
           <span>City Blood Net</span>
           <span>Safety Board</span>
           <span>Volunteer Cyber Team</span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HomeBottomSupport({ navigate }) {
+  return (
+    <section className="top-strip" aria-label="Support contact">
+      <div className="container top-strip-inner">
+        <button className="pill-btn link-button" type="button" onClick={() => navigate("home", "#home-options")}>
+          Choose Service
+        </button>
+        <div className="top-info">
+          <span>Call Support: +880 1795 766 338</span>
+          <span>Email: hi@reachout.org</span>
         </div>
       </div>
     </section>

@@ -1,10 +1,11 @@
 # ReachOut
 
-ReachOut is a React + Vite community support frontend with three main service flows:
+ReachOut is a React + Vite community support platform with:
 
 - Human Lost & Found
 - Goods Lost & Found
 - Blood Donation
+- Login and Register (MySQL-backed authentication API)
 
 
 ## Features
@@ -29,6 +30,8 @@ ReachOut is a React + Vite community support frontend with three main service fl
 - React
 - Vite
 - Plain CSS (`frontend/styles.css`)
+- Node.js + Express (`backend`)
+- MySQL (`mysql2`)
 
 
 ## Prerequisites
@@ -38,7 +41,22 @@ ReachOut is a React + Vite community support frontend with three main service fl
 
 ## How to Run (Development)
 
-From project root:
+### 1) Backend (MySQL API)
+
+```bash
+cd backend
+npm install
+npm run start
+```
+
+Before starting backend:
+- Copy `backend/.env.example` to `backend/.env`
+- Update DB credentials
+- Run `backend/schema.sql` in MySQL
+
+Backend default: `http://localhost:4000`
+
+### 2) Frontend
 
 ```bash
 cd frontend
@@ -46,10 +64,13 @@ npm install
 npm run dev
 ```
 
-Vite will start a local dev server and print the URL (usually `http://localhost:5173`).
+Frontend default: `http://localhost:5173`
 
 
 ## Notes
 
 - Routing is handled in `frontend/src/App.jsx` using path detection and browser history.
+- Auth API endpoints:
+  - `POST /api/auth/register`
+  - `POST /api/auth/login`
 - Some blood donation data is saved in browser local storage for demo persistence.

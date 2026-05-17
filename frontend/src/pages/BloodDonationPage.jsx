@@ -20,6 +20,7 @@ import {
   isDonorAvailableNow,
   urgencyOptions
 } from "./bloodDonationUtils";
+import { incrementUserPostCount } from "../services/userPostStats";
 
 function BloodDonationPage() {
   const [donors, setDonors] = useState(() => safeLoad(STORAGE_KEYS.donors, initialDonors));
@@ -131,6 +132,7 @@ function BloodDonationPage() {
     }
     newRequest.location = resolvedArea;
     setRequests((current) => [newRequest, ...current]);
+    incrementUserPostCount("blood");
 
     const matchingDonors = donors.filter(
       (donor) =>

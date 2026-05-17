@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { incrementUserPostCount } from "../services/userPostStats";
 
 const initialGoodsPosts = [
   {
@@ -81,12 +82,6 @@ function LostFoundPage() {
   const openCount = posts.filter((post) => post.status !== "Resolved").length;
   const foundCount = posts.filter((post) => post.type === "Found").length;
 
-  function goToHuman() {
-    window.history.pushState({}, "", "/human-lost-found");
-    window.dispatchEvent(new PopStateEvent("popstate"));
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
   function handleSubmit(event) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -103,6 +98,7 @@ function LostFoundPage() {
       details: data.get("details") || "No extra details provided."
     };
     setPosts((current) => [newPost, ...current]);
+    incrementUserPostCount("goods");
     setSubmittedPost(newPost);
     setNotice(`${newPost.type} report preview created for ${newPost.item}.`);
     event.currentTarget.reset();
@@ -136,9 +132,6 @@ function LostFoundPage() {
               <a className="btn btn-outline-light" href="#goods-report">
                 Post Report
               </a>
-              <button className="btn btn-outline-light" type="button" onClick={goToHuman}>
-                Human Lost &amp; Found
-              </button>
             </div>
           </div>
 

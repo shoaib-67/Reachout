@@ -52,6 +52,11 @@ p {
   padding: 60px 0;
 }
 
+#about,
+#contact {
+  scroll-margin-top: 110px;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -126,9 +131,10 @@ p {
 
 .brand-image {
   width: auto;
-  height: 68px;
+  height: 64px;
   max-width: min(260px, 100%);
   display: block;
+  image-rendering: auto;
 }
 
 
@@ -258,7 +264,7 @@ p {
 }
 
 .hero {
-  min-height: calc(100vh - 142px);
+  min-height: calc(100vh - 90px);
   position: relative;
   background-image: url("assets/hero-bg.svg");
   background-position: center;
@@ -278,17 +284,7 @@ p {
   position: relative;
   z-index: 1;
   text-align: center;
-  padding: 70px 0;
-}
-
-
-.hero-logo {
-  width: min(360px, 86vw);
-  max-height: 220px;
-  height: auto;
-  margin: 0 auto 14px;
-  display: block;
-  object-fit: contain;
+  padding: 56px 0;
 }
 .hero h1 {
   color: var(--color-5);
@@ -359,6 +355,251 @@ p {
 
 .home-option-card.option-blood {
   border-color: rgba(245, 146, 95, 0.75);
+}
+
+.about-section {
+  background: #ffffff;
+}
+
+.about-wrap .section-heading h2 {
+  margin-top: 10px;
+}
+
+.about-text {
+  margin: 16px auto 0;
+  max-width: 860px;
+  text-align: center;
+  color: var(--color-2);
+  line-height: 1.65;
+  font-size: 18px;
+}
+
+.auth-page {
+  padding: 36px 0 56px;
+}
+
+.auth-wrap {
+  max-width: 620px;
+}
+
+.dashboard-wrap {
+  max-width: 980px;
+}
+
+.auth-card {
+  background: #ffffff;
+  border: 1px solid var(--color-3);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 28px 24px;
+}
+
+.auth-card .mini {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: var(--primary-1);
+  color: #fff;
+  font-family: "Red Hat Display", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.auth-card h1 {
+  margin-top: 12px;
+  font-size: clamp(30px, 4vw, 38px);
+}
+
+.auth-subtext {
+  margin-top: 10px;
+  color: var(--color-2);
+}
+
+.auth-form {
+  margin-top: 18px;
+  display: grid;
+  gap: 12px;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--color-1);
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 700;
+}
+
+.auth-form input {
+  border: 1px solid var(--color-3);
+  border-radius: 10px;
+  padding: 11px 12px;
+  font-size: 15px;
+  font-family: "Inter", sans-serif;
+  color: var(--color-1);
+}
+
+.auth-form input:focus {
+  outline: 2px solid rgba(79, 118, 223, 0.25);
+  border-color: var(--primary-1);
+}
+
+.auth-message {
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.auth-message.error {
+  color: #b82c2c;
+}
+
+.auth-message.success {
+  color: #1f8b4d;
+}
+
+.auth-form .btn {
+  margin-top: 6px;
+}
+
+.auth-switch {
+  margin-top: 16px;
+  color: var(--color-2);
+}
+
+.profile-card .auth-subtext {
+  margin-top: 12px;
+}
+
+.profile-details {
+  margin-top: 16px;
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  background: #fbfdff;
+  border: 1px solid var(--color-3);
+  border-radius: 12px;
+}
+
+.profile-details p {
+  color: var(--color-1);
+}
+
+.profile-actions {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+}
+
+.auth-shell-main {
+  min-width: 0;
+}
+
+.auth-sidebar {
+  background: #1f3040;
+  color: #ffffff;
+  padding: 18px 14px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.auth-sidebar-brand {
+  text-align: left;
+  color: #ffffff;
+  background: rgba(244, 153, 89, 0.18);
+  border: 1px solid rgba(244, 153, 89, 0.5);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-family: "Red Hat Display", sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.auth-sidebar-user {
+  margin-top: 4px;
+  color: #c8d8e7;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding-bottom: 10px;
+}
+
+.auth-sidebar-menu {
+  margin-top: 4px;
+  display: grid;
+  gap: 7px;
+}
+
+.auth-sidebar-link {
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 700;
+}
+
+.auth-sidebar-link.active {
+  background: var(--primary-2);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.auth-sidebar-logout {
+  margin-top: auto;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  padding: 10px 12px;
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 700;
+}
+
+.user-overview {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.user-overview article {
+  padding: 14px;
+  border: 1px solid var(--color-3);
+  border-radius: 12px;
+  background: #fbfdff;
+  box-shadow: var(--shadow);
+}
+
+.user-overview small {
+  color: #708395;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 12px;
+}
+
+.user-overview p {
+  margin-top: 8px;
+  color: var(--color-1);
+  font-family: "Red Hat Display", sans-serif;
+  font-weight: 700;
+  font-size: 22px;
 }
 
 .option-toggle-card {
@@ -1901,17 +2142,17 @@ p {
   .supporter-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .auth-shell {
+    grid-template-columns: 230px minmax(0, 1fr);
+  }
+
 }
 
 @media (max-width: 800px) {
   .brand-image {
     height: 54px;
     width: auto;
-  }
-
-  .hero-logo {
-    width: min(300px, 88vw);
-    margin-bottom: 10px;
   }
 
   .main-nav {
@@ -2007,4 +2248,24 @@ p {
   .impact-card {
     padding: 24px 16px;
   }
+
+  .about-text {
+    font-size: 16px;
+  }
+
+  .auth-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-sidebar {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .user-overview {
+    grid-template-columns: 1fr;
+  }
+
 }
