@@ -16,7 +16,7 @@ function saveStoredStats(stats) {
 
 function getUserKey() {
   try {
-    const raw = localStorage.getItem("reachout_user");
+    const raw = sessionStorage.getItem("reachout_user") || localStorage.getItem("reachout_user");
     if (!raw) return null;
     const user = JSON.parse(raw);
     return user?.email || null;

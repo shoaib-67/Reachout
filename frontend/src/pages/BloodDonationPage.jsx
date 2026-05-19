@@ -1,153 +1,250 @@
 import React, { useEffect, useMemo, useState } from "react";
-import DonorRegistrationForm from "../components/blood/DonorRegistrationForm";
 import DonorSearchPanel from "../components/blood/DonorSearchPanel";
 import RequestBoard from "../components/blood/RequestBoard";
 import InfoNote from "../components/blood/InfoNote";
 import {
   STATUS,
-  STORAGE_KEYS,
   areaOptions,
   bloodGroupOptions,
-  dayOptions,
-  initialDonors,
-  initialRequests,
-  safeLoad,
   resolveArea,
-  toMinutes,
   normalizeText,
-  createRequestFromForm,
   restRuleInfo,
   isDonorAvailableNow,
   urgencyOptions
 } from "./bloodDonationUtils";
 import { incrementUserPostCount } from "../services/userPostStats";
+import {
+  listBloodDonors,
+  listBloodRequests,
+  createBloodRequest,
+  submitDonorResponse,
+  updateBloodRequestStatus
+} from "../services/bloodApi";
 
 function BloodDonationPage() {
-  const [donors, setDonors] = useState(() => safeLoad(STORAGE_KEYS.donors, initialDonors));
-  const [requests, setRequests] = useState(() => safeLoad(STORAGE_KEYS.requests, initialRequests));
-  const [notifications, setNotifications] = useState(() => safeLoad(STORAGE_KEYS.notifications, []));
-  const [actingDonorId, setActingDonorId] = useState(() => safeLoad(STORAGE_KEYS.actingDonorId, "BD-201"));
+  const BLOOD_VIEW_STORAGE_KEY = "reachout_blood_active_view";
+  const BLOOD_VIEWS = {
+    SEARCH: "search",
+    EMERGENCY: "emergency",
+    STATUS: "status",
+    COMMUNITY: "community"
+  };
+
+  const [donors, setDonors] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [actingDonorId, setActingDonorId] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
   const [searchBloodGroup, setSearchBloodGroup] = useState("All");
   const [searchArea, setSearchArea] = useState("All");
   const [eligibilityResult, setEligibilityResult] = useState(null);
-  const [donorPreview, setDonorPreview] = useState(null);
-  const [donorFormError, setDonorFormError] = useState("");
   const [requestFormError, setRequestFormError] = useState("");
+  const [activeBloodView, setActiveBloodView] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(BLOOD_VIEW_STORAGE_KEY);
+      if (saved && Object.values(BLOOD_VIEWS).includes(saved)) return saved;
+    } catch {
+      // ignore storage errors
+    }
+    return BLOOD_VIEWS.SEARCH;
+  });
   const [nowMs, setNowMs] = useState(Date.now());
+
+  function getCurrentUserSnapshot() {
+    if (currentUser?.email || currentUser?.name) return currentUser;
+    try {
+      const rawUser = sessionStorage.getItem("reachout_user") || localStorage.getItem("reachout_user");
+      return rawUser ? JSON.parse(rawUser) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function getMyPostedRequestIds(email) {
+    if (!email) return [];
+    try {
+      const raw = localStorage.getItem(`reachout_blood_my_requests_${email.toLowerCase()}`);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveMyPostedRequestId(email, requestId) {
+    if (!email || !requestId) return;
+    const key = `reachout_blood_my_requests_${email.toLowerCase()}`;
+    const current = getMyPostedRequestIds(email);
+    const next = Array.from(new Set([requestId, ...current])).slice(0, 200);
+    localStorage.setItem(key, JSON.stringify(next));
+  }
 
   const donorById = useMemo(() => Object.fromEntries(donors.map((donor) => [donor.id, donor])), [donors]);
   const actingDonor = donorById[actingDonorId];
   const actingDonorRest = actingDonor ? restRuleInfo(actingDonor) : null;
   const openRequests = requests.filter((request) => request.status === STATUS.OPEN).length;
-  const availableNowCount = donors.filter((donor) => isDonorAvailableNow(donor)).length;
-
-  useEffect(() => localStorage.setItem(STORAGE_KEYS.donors, JSON.stringify(donors)), [donors]);
-  useEffect(() => localStorage.setItem(STORAGE_KEYS.requests, JSON.stringify(requests)), [requests]);
-  useEffect(() => localStorage.setItem(STORAGE_KEYS.notifications, JSON.stringify(notifications)), [notifications]);
-  useEffect(() => localStorage.setItem(STORAGE_KEYS.actingDonorId, JSON.stringify(actingDonorId)), [actingDonorId]);
+  const availableNowCount = donors.filter((donor) => isDonorAvailableNow(donor) && restRuleInfo(donor).canDonate).length;
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      const now = Date.now();
-      setNowMs(now);
-      setRequests((current) =>
-        current.map((request) => {
-          if (request.status !== STATUS.OPEN || request.donorResponse !== "Pending") return request;
-          if (now > new Date(request.expiresAt).getTime()) return { ...request, status: STATUS.EXPIRED };
-          return request;
-        })
-      );
-    }, 1000);
+    const timer = window.setInterval(() => setNowMs(Date.now()), 1000);
     return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(BLOOD_VIEW_STORAGE_KEY, activeBloodView);
+    } catch {
+      // ignore storage errors
+    }
+  }, [activeBloodView]);
+
+  useEffect(() => {
+    try {
+      const rawUser = sessionStorage.getItem("reachout_user") || localStorage.getItem("reachout_user");
+      setCurrentUser(rawUser ? JSON.parse(rawUser) : null);
+    } catch {
+      setCurrentUser(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    async function loadBloodData() {
+      try {
+        const [donorRes, requestRes] = await Promise.all([listBloodDonors(), listBloodRequests()]);
+        const loadedDonors = donorRes?.donors || [];
+        const loadedRequests = requestRes?.requests || [];
+        setDonors(loadedDonors);
+        setRequests(loadedRequests);
+        setActingDonorId((current) => {
+          if (current && loadedDonors.some((donor) => donor.id === current)) return current;
+          return loadedDonors[0]?.id || "";
+        });
+      } catch (error) {
+        setRequestFormError(error.message || "Failed to load blood donation data.");
+      }
+    }
+
+    loadBloodData();
+  }, []);
+
+  useEffect(() => {
+    const poll = window.setInterval(async () => {
+      try {
+        const requestRes = await listBloodRequests();
+        setRequests(requestRes?.requests || []);
+      } catch {
+        // Silent polling failure to avoid noisy UI
+      }
+    }, 10000);
+    return () => window.clearInterval(poll);
   }, []);
 
   const filteredDonors = donors.filter((donor) => {
     const matchGroup = searchBloodGroup === "All" || donor.bloodGroup === searchBloodGroup;
     const matchArea = searchArea === "All" || donor.area === searchArea;
-    return matchGroup && matchArea;
+    const eligibleByRestRule = restRuleInfo(donor).canDonate;
+    return matchGroup && matchArea && eligibleByRestRule;
   });
+  const communityRequests = useMemo(() => {
+    const myEmail = (currentUser?.email || "").toLowerCase();
+    const myName = normalizeText(currentUser?.name || "");
+    return requests.filter((request) => {
+      const isClosed = request.status === STATUS.COMPLETED || request.status === STATUS.CANCELLED;
+      if (isClosed) return false;
+      const requestEmail = (request.postedByEmail || "").toLowerCase();
+      const requestName = normalizeText(request.postedByName || "");
+      const isMineByEmail = myEmail && requestEmail === myEmail;
+      const isMineByName = !requestEmail && myName && requestName === myName;
+      return !(isMineByEmail || isMineByName);
+    });
+  }, [requests, currentUser?.email, currentUser?.name]);
+  const myRequests = useMemo(() => {
+    const myEmail = (currentUser?.email || "").toLowerCase();
+    const myName = normalizeText(currentUser?.name || "");
+    const myIds = getMyPostedRequestIds(myEmail);
+    const owned = requests.filter((request) => {
+      const requestEmail = (request.postedByEmail || "").toLowerCase();
+      const requestName = normalizeText(request.postedByName || "");
+      const isMineByEmail = myEmail && requestEmail === myEmail;
+      const isMineByName = !requestEmail && myName && requestName === myName;
+      const isMineByLocalId = myIds.includes(request.id);
+      return Boolean(isMineByEmail || isMineByName || isMineByLocalId);
+    });
+
+    const statusRank = {
+      [STATUS.OPEN]: 1,
+      [STATUS.ACCEPTED]: 2,
+      [STATUS.EXPIRED]: 3,
+      [STATUS.COMPLETED]: 4,
+      [STATUS.CANCELLED]: 5
+    };
+
+    return owned.sort((a, b) => {
+      const rankA = statusRank[a.status] || 99;
+      const rankB = statusRank[b.status] || 99;
+      if (rankA !== rankB) return rankA - rankB;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+  }, [requests, currentUser?.email, currentUser?.name]);
 
   function pushNotification(text) {
     const notification = { id: `n-${Date.now()}`, text, ts: new Date().toLocaleString() };
     setNotifications((current) => [notification, ...current].slice(0, 8));
   }
 
-  function handleDonorRegistration(event) {
+  async function handleRequestCreation(event) {
     event.preventDefault();
-    setDonorFormError("");
-    const data = new FormData(event.currentTarget);
-    const areaRaw = (data.get("area") || "").toString();
-    const area = resolveArea(areaRaw);
-    const availableFrom = (data.get("availableFrom") || "09:00").toString();
-    const availableTo = (data.get("availableTo") || "17:00").toString();
-    const name = (data.get("name") || "").toString().trim();
-    const bloodGroup = (data.get("bloodGroup") || "Unknown").toString();
-
-    if (!area) {
-      setDonorFormError(`Area must be one of: ${areaOptions.join(", ")}.`);
-      return;
-    }
-    if (toMinutes(availableFrom) >= toMinutes(availableTo)) {
-      setDonorFormError("Availability time is invalid. 'From' must be earlier than 'To'.");
-      return;
-    }
-
-    const isDuplicate = donors.some(
-      (donor) =>
-        normalizeText(donor.name) === normalizeText(name) &&
-        donor.bloodGroup === bloodGroup &&
-        normalizeText(donor.area) === normalizeText(area)
-    );
-    if (isDuplicate) {
-      setDonorFormError("Duplicate donor detected (same name, blood group, and area).");
-      return;
-    }
-
-    const newDonor = {
-      id: `BD-${200 + donors.length + 1}`,
-      name: name || "Unnamed donor",
-      bloodGroup,
-      area,
-      scheduleDays: dayOptions.filter((day) => data.getAll("scheduleDays").includes(day)),
-      availableFrom,
-      availableTo,
-      donationHistory: []
+    const form = event.currentTarget;
+    setRequestFormError("");
+    const data = new FormData(form);
+    const userSnapshot = getCurrentUserSnapshot();
+    const payload = {
+      patient: (data.get("patient") || "").toString().trim() || "Unknown patient",
+      contactPhone: (data.get("contactPhone") || "").toString().trim() || null,
+      bloodGroup: (data.get("bloodGroup") || "Unknown").toString(),
+      hospital: (data.get("hospital") || "").toString().trim() || "Hospital not provided",
+      urgency: (data.get("urgency") || "Medium").toString(),
+      location: (data.get("location") || "").toString().trim() || "Location not provided",
+      postedByName: userSnapshot?.name || null,
+      postedByEmail: userSnapshot?.email || null,
+      postedByPhone: userSnapshot?.phone || null
     };
 
-    if (!newDonor.scheduleDays.length) newDonor.scheduleDays = ["Sun"];
-    setDonors((current) => [newDonor, ...current]);
-    setDonorPreview(newDonor);
-    event.currentTarget.reset();
-  }
-
-  function handleRequestCreation(event) {
-    event.preventDefault();
-    setRequestFormError("");
-    const data = new FormData(event.currentTarget);
-    const newRequest = createRequestFromForm(data, requests.length + 1);
-    const resolvedArea = resolveArea(newRequest.location);
+    const resolvedArea = resolveArea(payload.location);
     if (!resolvedArea) {
       setRequestFormError(`Location must be one of: ${areaOptions.join(", ")}.`);
       return;
     }
-    newRequest.location = resolvedArea;
-    setRequests((current) => [newRequest, ...current]);
-    incrementUserPostCount("blood");
+    payload.location = resolvedArea;
 
-    const matchingDonors = donors.filter(
-      (donor) =>
-        donor.bloodGroup === newRequest.bloodGroup &&
-        normalizeText(donor.area) === normalizeText(newRequest.location) &&
-        isDonorAvailableNow(donor)
-    );
-    if (matchingDonors.length > 0) {
-      matchingDonors.forEach((donor) =>
-        pushNotification(`Urgent alert sent to ${donor.name} (${donor.bloodGroup}) in ${donor.area} for ${newRequest.id}.`)
+    try {
+      const response = await createBloodRequest(payload);
+      const newRequest = response?.request;
+      if (!newRequest) throw new Error("Server did not return request.");
+      setRequests((current) => [newRequest, ...current]);
+      if (userSnapshot?.email) {
+        saveMyPostedRequestId(userSnapshot.email, newRequest.id);
+      }
+      incrementUserPostCount("blood");
+
+      const matchingDonors = donors.filter(
+        (donor) =>
+          donor.bloodGroup === newRequest.bloodGroup &&
+          normalizeText(donor.area) === normalizeText(newRequest.location) &&
+          isDonorAvailableNow(donor) &&
+          restRuleInfo(donor).canDonate
       );
-    } else {
-      pushNotification(`No instantly available nearby donor matched ${newRequest.id} (${newRequest.bloodGroup}, ${newRequest.location}).`);
+      if (matchingDonors.length > 0) {
+        matchingDonors.forEach((donor) =>
+          pushNotification(`Urgent alert sent to ${donor.name} (${donor.bloodGroup}) in ${donor.area} for ${newRequest.id}.`)
+        );
+      } else {
+        pushNotification(`No instantly available nearby donor matched ${newRequest.id} (${newRequest.bloodGroup}, ${newRequest.location}).`);
+      }
+      form.reset();
+    } catch (error) {
+      setRequestFormError(error.message || "Server error while creating request.");
     }
-    event.currentTarget.reset();
   }
 
   function handleEligibilityCheck(event) {
@@ -164,7 +261,7 @@ function BloodDonationPage() {
     );
   }
 
-  function handleDonorAction(requestId, action) {
+  async function handleDonorAction(requestId, action) {
     if (!actingDonor) return;
     if (action === "accept") {
       if (!eligibilityResult || !eligibilityResult.startsWith("Eligible")) {
@@ -176,38 +273,36 @@ function BloodDonationPage() {
         return;
       }
     }
-    setRequests((current) =>
-      current.map((request) =>
-        request.id === requestId && (request.status === STATUS.OPEN || request.status === STATUS.ACCEPTED)
-          ? {
-              ...request,
-              donorResponse: action === "accept" ? "Accepted" : "Declined",
-              acceptedBy: action === "accept" ? actingDonor.name : null,
-              status: action === "accept" ? STATUS.ACCEPTED : STATUS.OPEN
-            }
-          : request
-      )
-    );
 
-    if (action === "accept") {
-      const donatedOn = new Date().toISOString().slice(0, 10);
-      setDonors((current) =>
-        current.map((donor) =>
-          donor.id === actingDonorId ? { ...donor, donationHistory: [donatedOn, ...donor.donationHistory] } : donor
-        )
-      );
-      setEligibilityResult(null);
+    try {
+      const response = await submitDonorResponse(requestId, {
+        action,
+        donorId: actingDonor.id,
+        donorName: actingDonor.name
+      });
+      const updatedRequest = response?.request;
+      if (!updatedRequest) throw new Error("Server did not return request.");
+
+      setRequests((current) => current.map((request) => (request.id === requestId ? updatedRequest : request)));
+      if (action === "accept") {
+        const donorRes = await listBloodDonors();
+        setDonors(donorRes?.donors || []);
+        setEligibilityResult(null);
+      }
+    } catch (error) {
+      pushNotification(error.message || "Failed to update donor response.");
     }
   }
 
-  function handleRequesterClose(requestId, nextStatus) {
-    setRequests((current) =>
-      current.map((request) =>
-        request.id === requestId && (request.status === STATUS.OPEN || request.status === STATUS.ACCEPTED)
-          ? { ...request, status: nextStatus }
-          : request
-      )
-    );
+  async function handleRequesterClose(requestId, nextStatus) {
+    try {
+      const response = await updateBloodRequestStatus(requestId, { status: nextStatus });
+      const updatedRequest = response?.request;
+      if (!updatedRequest) throw new Error("Server did not return request.");
+      setRequests((current) => current.map((request) => (request.id === requestId ? updatedRequest : request)));
+    } catch (error) {
+      pushNotification(error.message || "Failed to update request status.");
+    }
   }
 
   return (
@@ -217,7 +312,7 @@ function BloodDonationPage() {
           <div>
             <p className="mini">Blood Donation</p>
             <h1>Register donors, raise emergency requests, and track responses.</h1>
-            <p>Frontend-only demo flow for donor registration, donor search, request response, and case closure.</p>
+            <p>MySQL-backed flow for donor registration, donor search, request response, and case closure.</p>
           </div>
           <div className="blood-kpi">
             <article>
@@ -237,38 +332,120 @@ function BloodDonationPage() {
       </section>
 
       <section className="section">
-        <div className="container blood-grid">
-          <DonorRegistrationForm onSubmit={handleDonorRegistration} donorPreview={donorPreview} error={donorFormError} />
-          <DonorSearchPanel
-            donors={filteredDonors}
-            searchBloodGroup={searchBloodGroup}
-            setSearchBloodGroup={setSearchBloodGroup}
-            searchArea={searchArea}
-            setSearchArea={setSearchArea}
-          />
-        </div>
-      </section>
+        <div className="container">
+          <div className="blood-option-switcher">
+            <button
+              className={`blood-option-btn ${activeBloodView === BLOOD_VIEWS.SEARCH ? "active" : ""}`}
+              type="button"
+              onClick={() => setActiveBloodView(BLOOD_VIEWS.SEARCH)}
+            >
+              Search Donor
+            </button>
+            <button
+              className={`blood-option-btn ${activeBloodView === BLOOD_VIEWS.EMERGENCY ? "active" : ""}`}
+              type="button"
+              onClick={() => setActiveBloodView(BLOOD_VIEWS.EMERGENCY)}
+            >
+              Emergency Request
+            </button>
+            <button
+              className={`blood-option-btn ${activeBloodView === BLOOD_VIEWS.STATUS ? "active" : ""}`}
+              type="button"
+              onClick={() => setActiveBloodView(BLOOD_VIEWS.STATUS)}
+            >
+              Request Status
+            </button>
+            <button
+              className={`blood-option-btn ${activeBloodView === BLOOD_VIEWS.COMMUNITY ? "active" : ""}`}
+              type="button"
+              onClick={() => setActiveBloodView(BLOOD_VIEWS.COMMUNITY)}
+            >
+              Community Requests
+            </button>
+          </div>
 
-      <section className="section blood-request-section">
-        <div className="container blood-grid">
-          <RequestCreationForm onSubmit={handleRequestCreation} error={requestFormError} />
-          <RequestBoard
-            donors={donors}
-            requests={requests}
-            actingDonorId={actingDonorId}
-            setActingDonorId={setActingDonorId}
-            actingDonor={actingDonor}
-            actingDonorRest={actingDonorRest}
-            eligibilityResult={eligibilityResult}
-            onEligibilityCheck={handleEligibilityCheck}
-            onDonorAction={handleDonorAction}
-            onRequesterClose={handleRequesterClose}
-            notifications={notifications}
-            nowMs={nowMs}
-          />
+          <div className="blood-single-panel">
+            {activeBloodView === BLOOD_VIEWS.SEARCH ? (
+              <DonorSearchPanel
+                donors={filteredDonors}
+                searchBloodGroup={searchBloodGroup}
+                setSearchBloodGroup={setSearchBloodGroup}
+                searchArea={searchArea}
+                setSearchArea={setSearchArea}
+              />
+            ) : null}
+
+            {activeBloodView === BLOOD_VIEWS.EMERGENCY ? (
+              <RequestCreationForm onSubmit={handleRequestCreation} error={requestFormError} />
+            ) : null}
+
+            {activeBloodView === BLOOD_VIEWS.STATUS ? (
+              <RequestBoard
+                donors={donors}
+                requests={myRequests}
+                actingDonorId={actingDonorId}
+                setActingDonorId={setActingDonorId}
+                actingDonor={actingDonor}
+                actingDonorRest={actingDonorRest}
+                eligibilityResult={eligibilityResult}
+                onEligibilityCheck={handleEligibilityCheck}
+                onDonorAction={handleDonorAction}
+                onRequesterClose={handleRequesterClose}
+                notifications={notifications}
+                nowMs={nowMs}
+              />
+            ) : null}
+
+            {activeBloodView === BLOOD_VIEWS.COMMUNITY ? <CommunityRequestsPanel requests={communityRequests} /> : null}
+          </div>
         </div>
       </section>
     </main>
+  );
+}
+
+function CommunityRequestsPanel({ requests }) {
+  return (
+    <div className="blood-panel">
+      <div className="blood-panel-heading">
+        <div>
+          <p className="mini">Community requests</p>
+          <h2>Requests posted by other users</h2>
+        </div>
+        <span>{requests.length} visible</span>
+      </div>
+      <div className="blood-list">
+        {requests.length === 0 ? (
+          <p className="empty-state">No other user requests found right now.</p>
+        ) : (
+          requests.map((request) => (
+            <article className="request-card" key={request.id}>
+              <div className="request-head">
+                <h3>
+                  {request.bloodGroup} | {request.patient}
+                </h3>
+                <strong>{request.id}</strong>
+              </div>
+              <p>
+                Hospital: {request.hospital}
+              </p>
+              <p>Location: {request.location || "Not provided"}</p>
+              <p>Emergency contact phone: {request.contactPhone || "Not provided"}</p>
+              {request.postedByName || request.postedByEmail ? (
+                <p>
+                  Posted by: {request.postedByName || "Unknown"}
+                  {request.postedByPhone ? ` | Phone: ${request.postedByPhone}` : " | Phone: Not provided"}
+                </p>
+              ) : null}
+              <div className="request-meta">
+                <span className="status-chip">{request.status}</span>
+                <span className="status-chip">Urgency: {request.urgency}</span>
+              </div>
+            </article>
+          ))
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -295,6 +472,10 @@ function RequestCreationForm({ onSubmit, error }) {
         <label>
           <span>Hospital</span>
           <input name="hospital" placeholder="Hospital name" required />
+        </label>
+        <label>
+          <span>Contact phone</span>
+          <input name="contactPhone" placeholder="Phone for urgent call" required />
         </label>
         <label>
           <span>Urgency level</span>

@@ -41,10 +41,16 @@ const missingPersonCases = [
 ];
 
 function HumanLostFoundPage() {
+  const HUMAN_VIEWS = {
+    SEARCH: "search",
+    REPORT: "report"
+  };
+
   const [query, setQuery] = useState("");
   const [area, setArea] = useState("All areas");
   const [reportType, setReportType] = useState("missing");
   const [submittedReport, setSubmittedReport] = useState(null);
+  const [activeView, setActiveView] = useState(HUMAN_VIEWS.SEARCH);
 
   const filteredCases = missingPersonCases.filter((person) => {
     const searchable = `${person.name} ${person.area} ${person.lastSeen} ${person.details}`.toLowerCase();
@@ -81,12 +87,12 @@ function HumanLostFoundPage() {
               location, and contact details.
             </p>
             <div className="human-hero-actions">
-              <a className="btn btn-primary" href="#human-search">
+              <button className="btn btn-primary link-button" type="button" onClick={() => setActiveView(HUMAN_VIEWS.SEARCH)}>
                 Search Person
-              </a>
-              <a className="btn btn-outline-light" href="#human-report">
+              </button>
+              <button className="btn btn-outline-light link-button" type="button" onClick={() => setActiveView(HUMAN_VIEWS.REPORT)}>
                 Post Report
-              </a>
+              </button>
             </div>
           </div>
 
@@ -107,144 +113,165 @@ function HumanLostFoundPage() {
         </div>
       </section>
 
-      <section className="section human-workspace" id="human-search">
-        <div className="container human-workspace-grid">
-          <div className="human-main-column">
-            <div className="human-panel">
-              <div className="human-panel-heading">
-                <div>
-                  <p className="mini">Search cases</p>
-                  <h2>Find a missing person</h2>
+      <section className="section human-workspace">
+        <div className="container">
+          <div className="section-option-switcher">
+            <button
+              className={`section-option-btn ${activeView === HUMAN_VIEWS.SEARCH ? "active" : ""}`}
+              type="button"
+              onClick={() => setActiveView(HUMAN_VIEWS.SEARCH)}
+            >
+              Search Person
+            </button>
+            <button
+              className={`section-option-btn ${activeView === HUMAN_VIEWS.REPORT ? "active" : ""}`}
+              type="button"
+              onClick={() => setActiveView(HUMAN_VIEWS.REPORT)}
+            >
+              Post Report
+            </button>
+          </div>
+
+          {activeView === HUMAN_VIEWS.SEARCH ? (
+            <div className="human-workspace-grid">
+              <div className="human-main-column">
+                <div className="human-panel">
+                  <div className="human-panel-heading">
+                    <div>
+                      <p className="mini">Search cases</p>
+                      <h2>Find a missing person</h2>
+                    </div>
+                    <span>{filteredCases.length} results</span>
+                  </div>
+
+                  <div className="human-search-controls">
+                    <label>
+                      <span>Search by name, location, or detail</span>
+                      <input
+                        value={query}
+                        onChange={(event) => setQuery(event.target.value)}
+                        placeholder="Example: Arif, Mirpur, blue shirt"
+                      />
+                    </label>
+                    <label>
+                      <span>Area</span>
+                      <select value={area} onChange={(event) => setArea(event.target.value)}>
+                        <option>All areas</option>
+                        <option>Mirpur</option>
+                        <option>Uttara</option>
+                        <option>Chattogram</option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <div className="person-list">
+                    {filteredCases.length === 0 ? (
+                      <p className="empty-state">No matching cases found. Try another name, area, or last seen detail.</p>
+                    ) : (
+                      filteredCases.map((person) => <PersonCaseCard person={person} key={person.id} />)
+                    )}
+                  </div>
                 </div>
-                <span>{filteredCases.length} results</span>
               </div>
 
-              <div className="human-search-controls">
-                <label>
-                  <span>Search by name, location, or detail</span>
-                  <input
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                    placeholder="Example: Arif, Mirpur, blue shirt"
-                  />
-                </label>
-                <label>
-                  <span>Area</span>
-                  <select value={area} onChange={(event) => setArea(event.target.value)}>
-                    <option>All areas</option>
-                    <option>Mirpur</option>
-                    <option>Uttara</option>
-                    <option>Chattogram</option>
-                  </select>
-                </label>
-              </div>
+              <aside className="human-side-column">
+                <div className="human-panel safety-panel">
+                  <p className="mini">Before posting</p>
+                  <h3>Helpful details</h3>
+                  <ul>
+                    <li>Clear recent photo</li>
+                    <li>Last seen place and time</li>
+                    <li>Clothing and visible marks</li>
+                    <li>Guardian or reporter contact</li>
+                  </ul>
+                </div>
+                <div className="human-panel hotline-panel">
+                  <p className="mini">Emergency note</p>
+                  <h3>Also contact local police</h3>
+                  <p>
+                    This page helps community discovery. For real emergencies, the family should also contact the nearest
+                    police station immediately.
+                  </p>
+                </div>
+              </aside>
+            </div>
+          ) : null}
 
-              <div className="person-list">
-                {filteredCases.length === 0 ? (
-                  <p className="empty-state">No matching cases found. Try another name, area, or last seen detail.</p>
+          {activeView === HUMAN_VIEWS.REPORT ? (
+            <div className="human-report-grid">
+              <form className="human-report-form" onSubmit={handleSubmit}>
+                <div className="human-panel-heading">
+                  <div>
+                    <p className="mini">Post report</p>
+                    <h2>Create a human lost/found post</h2>
+                  </div>
+                </div>
+
+                <div className="report-type-toggle" role="group" aria-label="Report type">
+                  <button className={reportType === "missing" ? "active" : ""} type="button" onClick={() => setReportType("missing")}>
+                    Missing Person
+                  </button>
+                  <button className={reportType === "found" ? "active" : ""} type="button" onClick={() => setReportType("found")}>
+                    Found Person
+                  </button>
+                </div>
+
+                <div className="form-grid">
+                  <label>
+                    <span>Person name</span>
+                    <input name="personName" placeholder="Full name if known" />
+                  </label>
+                  <label>
+                    <span>Age</span>
+                    <input name="age" type="number" min="0" placeholder="Age" />
+                  </label>
+                  <label>
+                    <span>Area</span>
+                    <input name="area" placeholder="Area, district" />
+                  </label>
+                  <label>
+                    <span>Last seen / found location</span>
+                    <input name="lastSeen" placeholder="Street, landmark, hospital, station" />
+                  </label>
+                  <label className="wide-field">
+                    <span>Description</span>
+                    <textarea name="description" rows="4" placeholder="Clothing, height, health condition, identifying details"></textarea>
+                  </label>
+                  <label>
+                    <span>Reporter contact</span>
+                    <input name="contact" placeholder="Phone number or email" />
+                  </label>
+                  <label>
+                    <span>Upload photo</span>
+                    <input name="photo" type="file" accept="image/*" />
+                  </label>
+                </div>
+
+                <button className="btn btn-primary" type="submit">
+                  Preview Report
+                </button>
+              </form>
+
+              <div className="human-preview-panel">
+                <p className="mini">Preview</p>
+                {submittedReport ? (
+                  <article className="preview-card">
+                    <span>{submittedReport.type}</span>
+                    <h3>{submittedReport.name}</h3>
+                    <p>Age: {submittedReport.age}</p>
+                    <p>Area: {submittedReport.area}</p>
+                    <p>Last seen/found: {submittedReport.lastSeen}</p>
+                    <p>Contact: {submittedReport.contact}</p>
+                  </article>
                 ) : (
-                  filteredCases.map((person) => <PersonCaseCard person={person} key={person.id} />)
+                  <div className="preview-empty">
+                    <h3>No report preview yet</h3>
+                    <p>Fill the form and submit to see how the frontend report card will look.</p>
+                  </div>
                 )}
               </div>
             </div>
-          </div>
-
-          <aside className="human-side-column">
-            <div className="human-panel safety-panel">
-              <p className="mini">Before posting</p>
-              <h3>Helpful details</h3>
-              <ul>
-                <li>Clear recent photo</li>
-                <li>Last seen place and time</li>
-                <li>Clothing and visible marks</li>
-                <li>Guardian or reporter contact</li>
-              </ul>
-            </div>
-            <div className="human-panel hotline-panel">
-              <p className="mini">Emergency note</p>
-              <h3>Also contact local police</h3>
-              <p>
-                This page helps community discovery. For real emergencies, the family should also contact the nearest
-                police station immediately.
-              </p>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section className="section human-report-section" id="human-report">
-        <div className="container human-report-grid">
-          <form className="human-report-form" onSubmit={handleSubmit}>
-            <div className="human-panel-heading">
-              <div>
-                <p className="mini">Post report</p>
-                <h2>Create a human lost/found post</h2>
-              </div>
-            </div>
-
-            <div className="report-type-toggle" role="group" aria-label="Report type">
-              <button className={reportType === "missing" ? "active" : ""} type="button" onClick={() => setReportType("missing")}>
-                Missing Person
-              </button>
-              <button className={reportType === "found" ? "active" : ""} type="button" onClick={() => setReportType("found")}>
-                Found Person
-              </button>
-            </div>
-
-            <div className="form-grid">
-              <label>
-                <span>Person name</span>
-                <input name="personName" placeholder="Full name if known" />
-              </label>
-              <label>
-                <span>Age</span>
-                <input name="age" type="number" min="0" placeholder="Age" />
-              </label>
-              <label>
-                <span>Area</span>
-                <input name="area" placeholder="Area, district" />
-              </label>
-              <label>
-                <span>Last seen / found location</span>
-                <input name="lastSeen" placeholder="Street, landmark, hospital, station" />
-              </label>
-              <label className="wide-field">
-                <span>Description</span>
-                <textarea name="description" rows="4" placeholder="Clothing, height, health condition, identifying details"></textarea>
-              </label>
-              <label>
-                <span>Reporter contact</span>
-                <input name="contact" placeholder="Phone number or email" />
-              </label>
-              <label>
-                <span>Upload photo</span>
-                <input name="photo" type="file" accept="image/*" />
-              </label>
-            </div>
-
-            <button className="btn btn-primary" type="submit">
-              Preview Report
-            </button>
-          </form>
-
-          <div className="human-preview-panel">
-            <p className="mini">Preview</p>
-            {submittedReport ? (
-              <article className="preview-card">
-                <span>{submittedReport.type}</span>
-                <h3>{submittedReport.name}</h3>
-                <p>Age: {submittedReport.age}</p>
-                <p>Area: {submittedReport.area}</p>
-                <p>Last seen/found: {submittedReport.lastSeen}</p>
-                <p>Contact: {submittedReport.contact}</p>
-              </article>
-            ) : (
-              <div className="preview-empty">
-                <h3>No report preview yet</h3>
-                <p>Fill the form and submit to see how the frontend report card will look.</p>
-              </div>
-            )}
-          </div>
+          ) : null}
         </div>
       </section>
     </main>

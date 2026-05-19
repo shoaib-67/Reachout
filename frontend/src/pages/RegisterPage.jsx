@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { registerUser } from "../services/authApi";
 
 function RegisterPage({ navigate }) {
-  const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", confirmPassword: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -17,7 +17,7 @@ function RegisterPage({ navigate }) {
     setError("");
     setSuccess("");
 
-    if (!form.name || !form.email || !form.password || !form.confirmPassword) {
+    if (!form.name || !form.email || !form.phone || !form.password || !form.confirmPassword) {
       setError("Please fill in all fields.");
       return;
     }
@@ -34,7 +34,7 @@ function RegisterPage({ navigate }) {
 
     try {
       setSubmitting(true);
-      await registerUser({ name: form.name, email: form.email, password: form.password });
+      await registerUser({ name: form.name, email: form.email, phone: form.phone, password: form.password });
       setSuccess("Registration successful. Redirecting to login...");
       window.setTimeout(() => navigate("login"), 700);
     } catch (err) {
@@ -61,6 +61,11 @@ function RegisterPage({ navigate }) {
             <label>
               Email
               <input type="email" name="email" value={form.email} onChange={updateField} placeholder="you@example.com" />
+            </label>
+
+            <label>
+              Phone
+              <input type="tel" name="phone" value={form.phone} onChange={updateField} placeholder="Your phone number" />
             </label>
 
             <label>

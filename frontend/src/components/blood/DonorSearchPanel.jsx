@@ -13,6 +13,7 @@ function DonorCard({ donor }) {
         <p>
           {donor.scheduleDays.join(", ")} | {donor.availableFrom}-{donor.availableTo}
         </p>
+        <p>Phone: {donor.phone || "Not provided"}</p>
         <p>Donated: {donor.donationHistory.length} time(s)</p>
       </div>
       <span className={`status-chip ${availableNow ? "open" : "declined"}`}>{availableNow ? "Available Now" : "Not In Time Slot"}</span>

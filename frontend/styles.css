@@ -43,6 +43,10 @@ p {
   margin: 0;
 }
 
+.mini {
+  display: none !important;
+}
+
 .container {
   width: min(1140px, calc(100% - 30px));
   margin: 0 auto;
@@ -663,6 +667,32 @@ p {
   transform: translateX(3px);
 }
 
+.section-option-switcher {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.section-option-btn {
+  border: 1px solid var(--color-3);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--color-1);
+  padding: 12px 14px;
+  font-family: "Red Hat Display", sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.section-option-btn.active {
+  background: var(--primary-1);
+  color: #ffffff;
+  border-color: var(--primary-1);
+}
+
 .search-box {
   margin: 30px auto 0;
   width: min(860px, 100%);
@@ -1187,7 +1217,7 @@ p {
 
 .human-panel-heading {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
@@ -1820,6 +1850,36 @@ p {
   align-items: start;
 }
 
+.blood-option-switcher {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.blood-option-btn {
+  border: 1px solid var(--color-3);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--color-1);
+  padding: 12px 14px;
+  font-family: "Red Hat Display", sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.blood-option-btn.active {
+  background: var(--primary-1);
+  color: #ffffff;
+  border-color: var(--primary-1);
+}
+
+.blood-single-panel {
+  display: grid;
+}
+
 .blood-panel {
   background: #ffffff;
   border: 1px solid var(--color-3);
@@ -1918,7 +1978,7 @@ p {
 
 .blood-panel-heading {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
@@ -2205,7 +2265,9 @@ p {
   .goods-search-controls,
   .goods-form-grid,
   .eligibility-form,
-  .day-check-grid {
+  .day-check-grid,
+  .blood-option-switcher,
+  .section-option-switcher {
     grid-template-columns: 1fr;
   }
 
@@ -2224,7 +2286,6 @@ p {
   .person-case-top,
   .person-case-footer,
   .goods-post-footer,
-  .blood-panel-heading,
   .blood-card,
   .request-head {
     display: grid;

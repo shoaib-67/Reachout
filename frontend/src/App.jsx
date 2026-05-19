@@ -23,13 +23,6 @@ function App() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
-  useEffect(() => {
-    if (isAuthenticated && (page === "home" || page === "login" || page === "register")) {
-      setPage("dashboard");
-      window.history.replaceState({}, "", "/dashboard");
-    }
-  }, [isAuthenticated, page]);
-
   function navigate(targetPage, hash) {
     const normalizedTarget = targetPage === "home" && isAuthenticated ? "dashboard" : targetPage;
     const path = normalizedTarget === "home" ? "/" : `/${normalizedTarget}`;
@@ -54,30 +47,24 @@ function App() {
 
   function handleLogin(payload) {
     if (payload?.token) {
-      localStorage.setItem("reachout_token", payload.token);
+      sessionStorage.setItem("reachout_token", payload.token);
       setAuthToken(payload.token);
     }
     if (payload?.user) {
-      localStorage.setItem("reachout_user", JSON.stringify(payload.user));
+      sessionStorage.setItem("reachout_user", JSON.stringify(payload.user));
       setCurrentUser(payload.user);
     }
   }
 
   function handleLogout() {
-    localStorage.removeItem("reachout_token");
-    localStorage.removeItem("reachout_user");
+    sessionStorage.removeItem("reachout_token");
+    sessionStorage.removeItem("reachout_user");
     setAuthToken(null);
     setCurrentUser(null);
     navigate("home");
   }
 
-  const resolvedPage = isAuthenticated
-    ? page === "home" || page === "login" || page === "register"
-      ? "dashboard"
-      : page
-    : page === "dashboard" || page === "profile"
-      ? "login"
-      : page;
+  const resolvedPage = !isAuthenticated && (page === "dashboard" || page === "profile") ? "login" : page;
 
   return (
     <>
@@ -97,7 +84,6 @@ function App() {
             ) : (
               <DashboardPage navigate={navigate} currentUser={currentUser} onLogout={handleLogout} />
             )}
-            {resolvedPage === "dashboard" ? null : <Footer />}
           </div>
         </div>
       ) : (
@@ -109,7 +95,7 @@ function App() {
           ) : (
             <HomePage navigate={navigate} />
           )}
-          <Footer />
+          {resolvedPage === "home" ? <Footer /> : null}
         </>
       )}
     </>
@@ -130,7 +116,7 @@ function getPageFromPath() {
 
 function getStoredUser() {
   try {
-    const raw = localStorage.getItem("reachout_user");
+    const raw = sessionStorage.getItem("reachout_user") || localStorage.getItem("reachout_user");
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
@@ -139,7 +125,7 @@ function getStoredUser() {
 
 function getStoredToken() {
   try {
-    return localStorage.getItem("reachout_token");
+    return sessionStorage.getItem("reachout_token") || localStorage.getItem("reachout_token");
   } catch {
     return null;
   }

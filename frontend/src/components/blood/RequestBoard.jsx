@@ -1,16 +1,8 @@
 import React from "react";
-import InfoNote from "./InfoNote";
 import { STATUS, getCountdownLabel } from "../../pages/bloodDonationUtils";
 
 function RequestBoard({
-  donors,
   requests,
-  actingDonorId,
-  setActingDonorId,
-  actingDonor,
-  actingDonorRest,
-  eligibilityResult,
-  onEligibilityCheck,
   onDonorAction,
   onRequesterClose,
   notifications,
@@ -25,45 +17,6 @@ function RequestBoard({
         </div>
         <span>{requests.length} total</span>
       </div>
-      <div className="request-tool-grid">
-        <label>
-          <span>Acting donor</span>
-          <select value={actingDonorId} onChange={(event) => setActingDonorId(event.target.value)}>
-            {donors.map((donor) => (
-              <option value={donor.id} key={donor.id}>
-                {donor.name} ({donor.bloodGroup}, {donor.area})
-              </option>
-            ))}
-          </select>
-        </label>
-        <form onSubmit={onEligibilityCheck} className="eligibility-form">
-          <label>
-            <span>Age</span>
-            <input name="age" type="number" min="0" required />
-          </label>
-          <label>
-            <span>Weight (kg)</span>
-            <input name="weight" type="number" min="0" required />
-          </label>
-          <label>
-            <span>Recent illness</span>
-            <select name="recentIllness" defaultValue="no">
-              <option value="no">No</option>
-              <option value="yes">Yes</option>
-            </select>
-          </label>
-          <button className="btn btn-outline-strong" type="submit">
-            Check Eligibility
-          </button>
-        </form>
-      </div>
-      {actingDonor ? (
-        <InfoNote>
-          {actingDonor.name}: {actingDonorRest?.message} | History:{" "}
-          {actingDonor.donationHistory.length ? actingDonor.donationHistory.join(", ") : "No donation history"}
-        </InfoNote>
-      ) : null}
-      {eligibilityResult ? <InfoNote>{eligibilityResult}</InfoNote> : null}
 
       <div className="blood-list">
         {requests.map((request) => (
@@ -77,6 +30,13 @@ function RequestBoard({
             <p>
               {request.hospital} | {request.location}
             </p>
+            {request.contactPhone ? <p>Emergency contact: {request.contactPhone}</p> : null}
+            {request.postedByName || request.postedByEmail ? (
+              <p>
+                Posted by: {request.postedByName || "Unknown"} {request.postedByEmail ? `(${request.postedByEmail})` : ""}
+                {request.postedByPhone ? ` | ${request.postedByPhone}` : ""}
+              </p>
+            ) : null}
             <div className="request-meta">
               <span className={`status-chip ${request.status === STATUS.OPEN || request.status === STATUS.ACCEPTED ? "open" : "declined"}`}>
                 {request.status}
@@ -85,16 +45,12 @@ function RequestBoard({
                 Donor: {request.donorResponse}
               </span>
               <span className="status-chip">Urgency: {request.urgency}</span>
-              <span className="status-chip">Expires in: {getCountdownLabel(request.expiresAt, nowMs)}</span>
+              {request.donorResponse !== "Declined" ? (
+                <span className="status-chip">Expires in: {getCountdownLabel(request.expiresAt, nowMs)}</span>
+              ) : null}
               {request.acceptedBy ? <span className="status-chip">Accepted by: {request.acceptedBy}</span> : null}
             </div>
             <div className="request-actions">
-              <button type="button" className="btn btn-outline-strong" onClick={() => onDonorAction(request.id, "accept")} disabled={request.status !== STATUS.OPEN}>
-                Accept
-              </button>
-              <button type="button" className="btn btn-outline-strong" onClick={() => onDonorAction(request.id, "decline")} disabled={request.status !== STATUS.OPEN}>
-                Decline
-              </button>
               <button
                 type="button"
                 className="btn btn-primary"

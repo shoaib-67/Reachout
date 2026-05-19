@@ -9,7 +9,7 @@ function DashboardPage({ navigate, currentUser, onLogout }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("reachout_token");
+    const token = sessionStorage.getItem("reachout_token") || localStorage.getItem("reachout_token");
     if (!token) {
       setLoading(false);
       setError("Please log in to continue.");

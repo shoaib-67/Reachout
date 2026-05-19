@@ -57,6 +57,11 @@ const areas = ["All areas", "Mirpur", "Uttara", "Dhanmondi", "Chattogram"];
 const types = ["All types", "Lost", "Found"];
 
 function LostFoundPage() {
+  const GOODS_VIEWS = {
+    SEARCH: "search",
+    REPORT: "report"
+  };
+
   const [posts, setPosts] = useState(initialGoodsPosts);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All categories");
@@ -65,6 +70,7 @@ function LostFoundPage() {
   const [reportType, setReportType] = useState("Lost");
   const [submittedPost, setSubmittedPost] = useState(null);
   const [notice, setNotice] = useState("");
+  const [activeView, setActiveView] = useState(GOODS_VIEWS.SEARCH);
 
   const filteredPosts = useMemo(
     () =>
@@ -126,12 +132,12 @@ function LostFoundPage() {
               closing resolved cases.
             </p>
             <div className="human-hero-actions">
-              <a className="btn btn-primary" href="#goods-search">
+              <button className="btn btn-primary link-button" type="button" onClick={() => setActiveView(GOODS_VIEWS.SEARCH)}>
                 Search Goods
-              </a>
-              <a className="btn btn-outline-light" href="#goods-report">
+              </button>
+              <button className="btn btn-outline-light link-button" type="button" onClick={() => setActiveView(GOODS_VIEWS.REPORT)}>
                 Post Report
-              </a>
+              </button>
             </div>
           </div>
 
@@ -152,164 +158,185 @@ function LostFoundPage() {
         </div>
       </section>
 
-      <section className="section goods-workspace" id="goods-search">
-        <div className="container goods-workspace-grid">
-          <div className="goods-panel">
-            <div className="human-panel-heading">
-              <div>
-                <p className="mini">Search posts</p>
-                <h2>Find matching goods</h2>
-              </div>
-              <span>{filteredPosts.length} results</span>
-            </div>
-
-            <div className="goods-search-controls">
-              <label>
-                <span>Search item, place, or detail</span>
-                <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Example: wallet, Mirpur, keys" />
-              </label>
-              <label>
-                <span>Type</span>
-                <select value={type} onChange={(event) => setType(event.target.value)}>
-                  {types.map((option) => (
-                    <option key={option}>{option}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>Category</span>
-                <select value={category} onChange={(event) => setCategory(event.target.value)}>
-                  {categories.map((option) => (
-                    <option key={option}>{option}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>Area</span>
-                <select value={area} onChange={(event) => setArea(event.target.value)}>
-                  {areas.map((option) => (
-                    <option key={option}>{option}</option>
-                  ))}
-                </select>
-              </label>
-            </div>
-
-            <div className="goods-list">
-              {filteredPosts.length === 0 ? (
-                <p className="empty-state">No goods posts match these filters. Try another item, category, or area.</p>
-              ) : (
-                filteredPosts.map((post) => (
-                  <GoodsPostCard post={post} onResolve={markResolved} onReport={reportPost} key={post.id} />
-                ))
-              )}
-            </div>
-          </div>
-
-          <aside className="goods-side-column">
-            <div className="goods-panel">
-              <p className="mini">Safe claiming</p>
-              <h3>Verify before handover</h3>
-              <ul className="goods-checklist">
-                <li>Ask for hidden item details</li>
-                <li>Meet in a public place</li>
-                <li>Keep contact info private when possible</li>
-                <li>Mark the post resolved after recovery</li>
-              </ul>
-            </div>
-            <div className="goods-panel">
-              <p className="mini">Moderation</p>
-              <h3>Report suspicious posts</h3>
-              <p className="goods-note">
-                Scam, duplicate, or abusive posts can be flagged for admin review as described in the SRS safety
-                requirements.
-              </p>
-            </div>
-            {notice ? <div className="goods-notice">{notice}</div> : null}
-          </aside>
-        </div>
-      </section>
-
-      <section className="section goods-report-section" id="goods-report">
-        <div className="container goods-report-grid">
-          <form className="goods-report-form" onSubmit={handleSubmit}>
-            <div className="human-panel-heading">
-              <div>
-                <p className="mini">Post report</p>
-                <h2>Create a goods lost/found post</h2>
-              </div>
-            </div>
-
-            <div className="report-type-toggle" role="group" aria-label="Goods report type">
-              <button className={reportType === "Lost" ? "active" : ""} type="button" onClick={() => setReportType("Lost")}>
-                Lost Item
-              </button>
-              <button className={reportType === "Found" ? "active" : ""} type="button" onClick={() => setReportType("Found")}>
-                Found Item
-              </button>
-            </div>
-
-            <div className="goods-form-grid">
-              <label>
-                <span>Item name</span>
-                <input name="item" placeholder="Wallet, phone, bag, document" required />
-              </label>
-              <label>
-                <span>Category</span>
-                <select name="category" required>
-                  {categories.slice(1).map((option) => (
-                    <option key={option}>{option}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>Area</span>
-                <input name="area" placeholder="Mirpur, Uttara, Dhanmondi" required />
-              </label>
-              <label>
-                <span>Lost/found date</span>
-                <input name="date" type="date" required />
-              </label>
-              <label className="wide-field">
-                <span>Exact place</span>
-                <input name="place" placeholder="Station, bus stop, campus, hospital, market" required />
-              </label>
-              <label className="wide-field">
-                <span>Description</span>
-                <textarea name="details" rows="4" placeholder="Color, brand, contents, marks, or proof needed to claim" required></textarea>
-              </label>
-              <label>
-                <span>Reporter contact</span>
-                <input name="contact" placeholder="Phone number or email" required />
-              </label>
-              <label>
-                <span>Upload image</span>
-                <input name="photo" type="file" accept="image/*" />
-              </label>
-            </div>
-
-            <button className="btn btn-primary" type="submit">
-              Preview Goods Post
+      <section className="section goods-workspace">
+        <div className="container">
+          <div className="section-option-switcher">
+            <button
+              className={`section-option-btn ${activeView === GOODS_VIEWS.SEARCH ? "active" : ""}`}
+              type="button"
+              onClick={() => setActiveView(GOODS_VIEWS.SEARCH)}
+            >
+              Search Goods
             </button>
-          </form>
-
-          <div className="goods-preview-panel">
-            <p className="mini">Preview</p>
-            {submittedPost ? (
-              <article className="preview-card">
-                <span>{submittedPost.type} Goods Report</span>
-                <h3>{submittedPost.item}</h3>
-                <p>Category: {submittedPost.category}</p>
-                <p>Area: {submittedPost.area}</p>
-                <p>Place: {submittedPost.place}</p>
-                <p>Contact: {submittedPost.contact}</p>
-              </article>
-            ) : (
-              <div className="preview-empty">
-                <h3>No goods preview yet</h3>
-                <p>Fill the form and submit to see the item recovery card before it joins the board.</p>
-              </div>
-            )}
+            <button
+              className={`section-option-btn ${activeView === GOODS_VIEWS.REPORT ? "active" : ""}`}
+              type="button"
+              onClick={() => setActiveView(GOODS_VIEWS.REPORT)}
+            >
+              Post Report
+            </button>
           </div>
+
+          {activeView === GOODS_VIEWS.SEARCH ? (
+            <div className="goods-workspace-grid">
+              <div className="goods-panel">
+                <div className="human-panel-heading">
+                  <div>
+                    <p className="mini">Search posts</p>
+                    <h2>Find matching goods</h2>
+                  </div>
+                  <span>{filteredPosts.length} results</span>
+                </div>
+
+                <div className="goods-search-controls">
+                  <label>
+                    <span>Search item, place, or detail</span>
+                    <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Example: wallet, Mirpur, keys" />
+                  </label>
+                  <label>
+                    <span>Type</span>
+                    <select value={type} onChange={(event) => setType(event.target.value)}>
+                      {types.map((option) => (
+                        <option key={option}>{option}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    <span>Category</span>
+                    <select value={category} onChange={(event) => setCategory(event.target.value)}>
+                      {categories.map((option) => (
+                        <option key={option}>{option}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    <span>Area</span>
+                    <select value={area} onChange={(event) => setArea(event.target.value)}>
+                      {areas.map((option) => (
+                        <option key={option}>{option}</option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+
+                <div className="goods-list">
+                  {filteredPosts.length === 0 ? (
+                    <p className="empty-state">No goods posts match these filters. Try another item, category, or area.</p>
+                  ) : (
+                    filteredPosts.map((post) => (
+                      <GoodsPostCard post={post} onResolve={markResolved} onReport={reportPost} key={post.id} />
+                    ))
+                  )}
+                </div>
+              </div>
+
+              <aside className="goods-side-column">
+                <div className="goods-panel">
+                  <p className="mini">Safe claiming</p>
+                  <h3>Verify before handover</h3>
+                  <ul className="goods-checklist">
+                    <li>Ask for hidden item details</li>
+                    <li>Meet in a public place</li>
+                    <li>Keep contact info private when possible</li>
+                    <li>Mark the post resolved after recovery</li>
+                  </ul>
+                </div>
+                <div className="goods-panel">
+                  <p className="mini">Moderation</p>
+                  <h3>Report suspicious posts</h3>
+                  <p className="goods-note">
+                    Scam, duplicate, or abusive posts can be flagged for admin review as described in the SRS safety
+                    requirements.
+                  </p>
+                </div>
+                {notice ? <div className="goods-notice">{notice}</div> : null}
+              </aside>
+            </div>
+          ) : null}
+
+          {activeView === GOODS_VIEWS.REPORT ? (
+            <div className="goods-report-grid">
+              <form className="goods-report-form" onSubmit={handleSubmit}>
+                <div className="human-panel-heading">
+                  <div>
+                    <p className="mini">Post report</p>
+                    <h2>Create a goods lost/found post</h2>
+                  </div>
+                </div>
+
+                <div className="report-type-toggle" role="group" aria-label="Goods report type">
+                  <button className={reportType === "Lost" ? "active" : ""} type="button" onClick={() => setReportType("Lost")}>
+                    Lost Item
+                  </button>
+                  <button className={reportType === "Found" ? "active" : ""} type="button" onClick={() => setReportType("Found")}>
+                    Found Item
+                  </button>
+                </div>
+
+                <div className="goods-form-grid">
+                  <label>
+                    <span>Item name</span>
+                    <input name="item" placeholder="Wallet, phone, bag, document" required />
+                  </label>
+                  <label>
+                    <span>Category</span>
+                    <select name="category" required>
+                      {categories.slice(1).map((option) => (
+                        <option key={option}>{option}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    <span>Area</span>
+                    <input name="area" placeholder="Mirpur, Uttara, Dhanmondi" required />
+                  </label>
+                  <label>
+                    <span>Lost/found date</span>
+                    <input name="date" type="date" required />
+                  </label>
+                  <label className="wide-field">
+                    <span>Exact place</span>
+                    <input name="place" placeholder="Station, bus stop, campus, hospital, market" required />
+                  </label>
+                  <label className="wide-field">
+                    <span>Description</span>
+                    <textarea name="details" rows="4" placeholder="Color, brand, contents, marks, or proof needed to claim" required></textarea>
+                  </label>
+                  <label>
+                    <span>Reporter contact</span>
+                    <input name="contact" placeholder="Phone number or email" required />
+                  </label>
+                  <label>
+                    <span>Upload image</span>
+                    <input name="photo" type="file" accept="image/*" />
+                  </label>
+                </div>
+
+                <button className="btn btn-primary" type="submit">
+                  Preview Goods Post
+                </button>
+              </form>
+
+              <div className="goods-preview-panel">
+                <p className="mini">Preview</p>
+                {submittedPost ? (
+                  <article className="preview-card">
+                    <span>{submittedPost.type} Goods Report</span>
+                    <h3>{submittedPost.item}</h3>
+                    <p>Category: {submittedPost.category}</p>
+                    <p>Area: {submittedPost.area}</p>
+                    <p>Place: {submittedPost.place}</p>
+                    <p>Contact: {submittedPost.contact}</p>
+                  </article>
+                ) : (
+                  <div className="preview-empty">
+                    <h3>No goods preview yet</h3>
+                    <p>Fill the form and submit to see the item recovery card before it joins the board.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : null}
         </div>
       </section>
     </main>
